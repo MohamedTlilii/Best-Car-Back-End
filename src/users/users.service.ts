@@ -48,7 +48,7 @@ export class UsersService {
     const passwordRegex = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/;
     if (!passwordRegex.test(createUserDto.password)) {
       throw new BadRequestException(
-        'Password must contain at least 8 characters, including one uppercase letter, one lowercase letter, one digit, and one special character'
+        'Password must contain at least 8 characters, including one uppercase letter, one lowercase letter, one digit, and one special character',
       );
     }
     // Ensure password and confirmPassword match
@@ -60,7 +60,10 @@ export class UsersService {
     // Hash the password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(createUserDto.password, salt);
-    const hashedConfirmPassword = await bcrypt.hash(createUserDto.confirmpassword, salt);
+    const hashedConfirmPassword = await bcrypt.hash(
+      createUserDto.confirmpassword,
+      salt,
+    );
     // Save the new user
     const newUser = this.usersRepository.create({
       username: createUserDto.username,

@@ -12,7 +12,7 @@ export class CarController {
     return this.carService.create(createCarDto);
   }
 
-  @Get()
+  @Get('cars')
   findAll() {
     return this.carService.findAll();
   }
