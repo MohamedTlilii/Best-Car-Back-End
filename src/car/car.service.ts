@@ -12,7 +12,7 @@ export class CarService {
     private carRepository: Repository<Car>,
   ) {}
 
-  async create(createCarDto: CreateCarDto): Promise<{ message: string, car: Car }> {
+  async createCar(createCarDto: CreateCarDto): Promise<{ message: string, car: Car }> {
     const newCar = this.carRepository.create(createCarDto);
     const savedCar = await this.carRepository.save(newCar);
     return {
@@ -21,7 +21,7 @@ export class CarService {
     };
   }
 
-  async findAll(): Promise<{ message: string, cars: Car[] }> {
+  async getAllCars(): Promise<{ message: string, cars: Car[] }> {
     const cars = await this.carRepository.find();
     return {
       message: cars.length ? 'Cars retrieved successfully!' : 'No cars found.',
@@ -29,7 +29,7 @@ export class CarService {
     };
   }
 
-  async findOne(id: number): Promise<{ message: string; car: Car }> {
+  async getCar(id: number): Promise<{ message: string; car: Car }> {
     const car = await this.carRepository.findOneBy({ id });
     if (!car) {
       throw new NotFoundException(`Car with ID ${id} not found.`);
@@ -39,20 +39,19 @@ export class CarService {
       car,
     };
   }
-
-  async update(id:number, updateCarDto: UpdateCarDto): Promise<{ message: string, car: Car }> {
+  async updateCar(id:number, updateCarDto: UpdateCarDto): Promise<{ message: string, car: Car }> {
     const result = await this.carRepository.update(id, updateCarDto);
     if (result.affected === 0) {
       throw new NotFoundException(`Car with ID ${id} not found.`);
     }
-    const updatedCar = await this.findOne(id);
+    const updatedCar = await this.getCar(id);
     return {
       message: 'Car updated successfully!',
       car: updatedCar.car,
     };
   }
 
-  async remove(id: number): Promise<{ message: string }> {
+  async removeCar(id: number): Promise<{ message: string }> {
     const result = await this.carRepository.delete(id);
     if (result.affected === 0) {
       throw new NotFoundException(`Car with ID ${id} not found.`);

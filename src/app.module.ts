@@ -5,15 +5,25 @@ import { UsersModule } from './users/users.module';
 import { CarModule } from './car/car.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
+import { LoginModule } from './user-auth/login/login.module';
+import { RegisterModule } from './user-auth/register/register.module';
+import { JwtAuthGuard } from './Guard/jwt-auth.guard';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
-    UsersModule,
-    CarModule,
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    JwtModule.register({
+      global: true,
+      secret: process.env.JWT_SECRET,
+      signOptions: { expiresIn: '1h' },
+    }),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: process.env.POSTGRES_HOST,
+      host: process.env.POSTGRES_HOST || 'localhost',
       port: parseInt(<string>process.env.POSTGRES_PORT),
       username: process.env.POSTGRES_USERNAME,
       password: process.env.POSTGRES_PASSWORD,
@@ -22,8 +32,18 @@ import { ConfigModule } from '@nestjs/config';
       synchronize: true,
       // entities: [User],
     }),
+    RegisterModule,
+    LoginModule,
+    UsersModule,
+    CarModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+  ],
 })
 export class AppModule {}

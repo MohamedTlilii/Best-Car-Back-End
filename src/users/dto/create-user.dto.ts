@@ -5,4 +5,5 @@ export class CreateUserDto {
   age: number;
   password: string;
   confirmpassword: string;
+  isAdmin: boolean;
 }
