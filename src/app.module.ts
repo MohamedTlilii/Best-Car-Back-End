@@ -10,6 +10,8 @@ import { RegisterModule } from './user-auth/register/register.module';
 import { JwtAuthGuard } from './Guard/jwt-auth.guard';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -19,18 +21,21 @@ import { JwtModule } from '@nestjs/jwt';
     JwtModule.register({
       global: true,
       secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '1h' },
+      signOptions: { expiresIn: '999999999h' },
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.POSTGRES_HOST || 'localhost',
-      port: parseInt(<string>process.env.POSTGRES_PORT),
+      port: parseInt(process.env.POSTGRES_PORT, 10),
       username: process.env.POSTGRES_USERNAME,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
       autoLoadEntities: true,
       synchronize: true,
-      // entities: [User],
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'uploads'), // Points to your uploads folder
+      serveRoot: '/uploads/', // Exposes the folder at /uploads/
     }),
     RegisterModule,
     LoginModule,

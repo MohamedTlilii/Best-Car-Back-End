@@ -9,6 +9,9 @@ export class Car {
   name: string;
 
   @Column({ nullable: true })
+  image: string;
+
+  @Column({ nullable: true })
   description: string;
 
   @Column({ nullable: true })
@@ -31,6 +34,9 @@ export class Car {
 
   @Column({ nullable: true })
   isAvailable: boolean;
+
+  // @Column({ nullable: false })
+  // isNotAvailable: boolean;
 
   @Column({ default: true })
   isActive: boolean;

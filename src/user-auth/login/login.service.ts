@@ -41,14 +41,14 @@ export class LoginService {
 
     // 6. Return the desired user information along with the token
     return {
-      message: 'Login successful', // Custom success message
-      id: user.id, // User ID
-      name: user.name, // User name (assuming you have this field in your User entity)
-      username: user.username, // User's username (assuming you have this field in your User entity)
-      email: user.email, // User's email
-      age: user.age, // User's age (assuming you have this field in your User entity)
-      isAdmin: user.isAdmin, // Boolean indicating if the user is an admin (assuming you have this field in your User entity)
-      token: token, // The JWT token
+      message: 'Login successful',
+      id: user.id,
+      name: user.name,
+      username: user.username,
+      email: user.email,
+      age: user.age,
+      isAdmin: user.isAdmin,
+      token: token,
     };
   }
 }

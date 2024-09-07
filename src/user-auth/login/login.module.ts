@@ -11,8 +11,4 @@ import { LoginService } from './login.service';
   providers: [LoginService],
   exports: [LoginService],
 })
-export class LoginModule {
-  // constructor() {
-  //   // console.log('JWT_SECRET:', process.env.JWT_SECRET);
-  // }
-}
+export class LoginModule {}

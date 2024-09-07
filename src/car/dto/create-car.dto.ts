@@ -8,4 +8,6 @@ export class CreateCarDto {
   color: string;
   mileage: number;
   isAvailable: boolean;
+  // isNotAvailable: boolean;
+  image?: string;
 }

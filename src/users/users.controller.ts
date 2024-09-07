@@ -1,22 +1,16 @@
 import {
   Controller,
   Get,
-  // Post,
   Body,
   Patch,
   Param,
   Delete,
-  // UseGuards,
   //  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { RegisterModule } from '../user-auth/register/register.module';
-// import { Public } from 'src/Guard/jwt-auth.guard';
-// import { JwtAuthGuard } from 'src/Guard/jwt-auth.guard';
 
-// @UseGuards(JwtAuthGuard)
-// @Public()
 @Controller('users')
 export class UsersController {
   constructor(
