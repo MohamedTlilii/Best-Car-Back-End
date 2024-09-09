@@ -3,7 +3,7 @@ import { extname } from 'path';
 
 export const multerConfig = {
   storage: diskStorage({
-    destination: './uploads', // Ensure this folder exists and is correct
+    destination: './uploads',
     filename: (req, file, callback) => {
       const fileExtName = extname(file.originalname);
       const fileName = `${Date.now()}${fileExtName}`;

@@ -21,12 +21,13 @@ export class CarService {
     file: Express.Multer.File,
   ): Promise<{ message: string; car: Car }> {
     if (file) {
-      createCarDto.image = file.path; // Multer will automatically provide the correct file path
+      createCarDto.image = file.path;
     }
-    // Ensure that isAvailable is a boolean
-    createCarDto.isAvailable = Boolean(createCarDto.isAvailable);
 
-    const newCar = this.carRepository.create(createCarDto);
+    const newCar = this.carRepository.create({
+      ...createCarDto,
+      isAvailable: createCarDto.isAvailable === 'true',
+    });
     const savedCar = await this.carRepository.save(newCar);
     return {
       message: 'Car successfully created!',
@@ -58,7 +59,6 @@ export class CarService {
     updateCarDto: UpdateCarDto,
     file?: Express.Multer.File,
   ): Promise<{ message: string; car: Car }> {
-    // Log the updateCarDto to check its content
     console.log('updateCarDto:', updateCarDto);
     console.log('Uploaded File:', file);
 
@@ -67,19 +67,17 @@ export class CarService {
       throw new NotFoundException(`Car with ID ${id} not found.`);
     }
 
-    // If a new file is provided, update the image path
     if (file) {
       updateCarDto.image = file.path;
     }
-    // console.log(updateCarDto);
-    // Ensure that updateCarDto is not empty before proceeding with the update
     if (Object.keys(updateCarDto).length === 0) {
       throw new BadRequestException('No update values provided.');
     }
 
-    await this.carRepository.update(id, updateCarDto);
-
-    // Retrieve the updated car to return
+    await this.carRepository.update(id, {
+      ...updateCarDto,
+      isAvailable: updateCarDto.isAvailable === 'true',
+    });
 
     const updatedCar = await this.carRepository.findOneBy({ id });
     return {

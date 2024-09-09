@@ -12,6 +12,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { EventModule } from './event/event.module';
 
 @Module({
   imports: [
@@ -34,13 +35,14 @@ import { join } from 'path';
       synchronize: true,
     }),
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'uploads'), // Points to your uploads folder
-      serveRoot: '/uploads/', // Exposes the folder at /uploads/
+      rootPath: join(__dirname, '..', 'uploads'),
+      serveRoot: '/uploads/',
     }),
     RegisterModule,
     LoginModule,
     UsersModule,
     CarModule,
+    EventModule,
   ],
   controllers: [AppController],
   providers: [

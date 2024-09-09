@@ -12,13 +12,10 @@ export class RegisterService {
   ) {}
 
   async register(createUserDto: CreateUserDto) {
-    // Validate user data
     await this.validateUserData(createUserDto);
 
-    // Hash the password
     const hashedPassword = await this.hashPassword(createUserDto.password);
 
-    // Create a new user
     const newUser = this.usersRepository.create({
       ...createUserDto,
       password: hashedPassword,

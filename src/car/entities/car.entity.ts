@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Event } from '../../event/entities/event.entity';
 
 @Entity()
 export class Car {
@@ -35,9 +36,9 @@ export class Car {
   @Column({ nullable: true })
   isAvailable: boolean;
 
-  // @Column({ nullable: false })
-  // isNotAvailable: boolean;
-
   @Column({ default: true })
   isActive: boolean;
+
+  @OneToMany(() => Event, (event) => event.car)
+  events: Event[];
 }

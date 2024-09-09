@@ -7,7 +7,6 @@ import { join } from 'path';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Setup CORS
   app.use(
     cors({
       origin: 'http://localhost:3001',
@@ -16,7 +15,6 @@ async function bootstrap() {
     }),
   );
 
-  // Ensure the uploads directory exists
   const uploadsDir = join(__dirname, '..', 'uploads');
   if (!existsSync(uploadsDir)) {
     mkdirSync(uploadsDir, { recursive: true });

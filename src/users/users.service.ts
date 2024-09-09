@@ -17,7 +17,6 @@ export class UsersService {
   }
 
   async getUser(id: number) {
-    // Find the user by ID
     const user = await this.usersRepository.findOneBy({ id });
 
     if (!user) {
@@ -28,17 +27,14 @@ export class UsersService {
   }
 
   async updateUser(id: number, updateUserDto: UpdateUserDto) {
-    // Find the user by ID
     const existedUser = await this.usersRepository.findOneBy({ id: id });
 
     if (!existedUser) {
       throw new BadRequestException('User not found');
     }
 
-    // Update the user's name with the new value
     existedUser.name = updateUserDto.name;
 
-    // Save the updated user entity
     const updatedUser = await this.usersRepository.save(existedUser);
     return { message: 'User updated successfully', updatedUser };
   }

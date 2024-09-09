@@ -28,11 +28,11 @@ export class CarController {
     @Body() createCarDto: CreateCarDto,
     @UploadedFile() image: Express.Multer.File,
   ) {
-    console.log('Uploaded file:', image); // Log the uploaded file details
+    console.log('Uploaded file:', image);
     if (image) {
-      createCarDto.image = image.path; // Ensure the image path is stored in the DTO
+      createCarDto.image = image.path;
     }
-    return this.carService.createCar(createCarDto, image); // Pass both DTO and file to service
+    return this.carService.createCar(createCarDto, image);
   }
 
   @Get('getcars')
@@ -51,14 +51,14 @@ export class CarController {
     @Param('id') id: string,
     @Body() updateCarDto: UpdateCarDto,
     @UploadedFile() image?: Express.Multer.File,
-    @Req() req?: Request, // Use @Req() if needed, but typically not required here
+    @Req() req?: Request,
   ) {
-    console.log('Request Body:', req?.body); // Use optional chaining in case req is not available
-    console.log('Uploaded File:', image); // Use the image directly
+    console.log('Request Body:', req?.body);
+    console.log('Uploaded File:', image);
     console.log('Update Car DTO:', updateCarDto);
 
     if (image) {
-      updateCarDto.image = image.path; // Ensure the image path is stored in the DTO
+      updateCarDto.image = image.path;
     }
     if (Object.keys(updateCarDto).length === 0) {
       throw new BadRequestException('No update values provided.');

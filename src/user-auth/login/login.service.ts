@@ -17,29 +17,23 @@ export class LoginService {
   async login(loginUserDto: LoginUserDto): Promise<any> {
     const { email, password } = loginUserDto;
 
-    // 1. Find the user by email
     const user = await this.usersRepository.findOne({ where: { email } });
 
-    // 2. If user is not found, throw an unauthorized exception
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    // 3. Compare the provided password with the stored hashed password
     const isPasswordMatching = await bcrypt.compare(password, user.password);
 
-    // 4. If the password does not match, throw an unauthorized exception
     if (!isPasswordMatching) {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    // 5. Generate JWT token using the user's ID
     const token = this.jwtService.sign(
-      { id: user.id }, // Payload (data to be signed into the token)
-      { secret: process.env.JWT_SECRET }, // Secret key for signing the token
+      { id: user.id },
+      { secret: process.env.JWT_SECRET },
     );
 
-    // 6. Return the desired user information along with the token
     return {
       message: 'Login successful',
       id: user.id,

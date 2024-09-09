@@ -7,7 +7,6 @@ export class CreateCarDto {
   price: number;
   color: string;
   mileage: number;
-  isAvailable: boolean;
-  // isNotAvailable: boolean;
+  isAvailable?: 'true' | 'false';
   image?: string;
 }

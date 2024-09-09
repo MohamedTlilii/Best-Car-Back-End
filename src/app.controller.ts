@@ -1,12 +1,13 @@
 import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
+import { Public } from './Guard/jwt-auth.guard';
 
-@Controller('/naut')
+@Public()
+@Controller('')
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  // /naut/botilis
-  @Get('/botilis')
+  @Get('')
   getHello(): string {
     return this.appService.getHello();
   }
