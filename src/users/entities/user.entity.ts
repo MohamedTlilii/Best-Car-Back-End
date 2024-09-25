@@ -12,6 +12,9 @@ export class User {
   username: string;
 
   @Column({ nullable: true })
+  image: string;
+
+  @Column({ nullable: true })
   email: string;
 
   @Column({ nullable: true })
@@ -23,9 +26,12 @@ export class User {
   @Column({ nullable: true })
   confirmpassword: string;
 
-  @Column({ nullable: true })
+  @Column({ default: true })
   isAdmin: boolean;
 
   @Column({ default: true })
   isActive: boolean;
+
+  @Column({ nullable: true })
+  role: 'admin' | 'superadmin';
 }

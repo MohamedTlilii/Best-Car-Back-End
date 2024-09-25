@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
-import { Car } from '../../car/entities/car.entity'; // Adjust path if necessary
+import { Car } from '../../car/entities/car.entity';
 
 @Entity()
 export class Event {
@@ -10,8 +10,26 @@ export class Event {
   name: string;
 
   @Column()
-  date: string;
+  note: string;
 
-  @ManyToOne(() => Car, (car) => car.events)
+  @Column()
+  startdate: string;
+
+  @Column()
+  enddate: string;
+
+  @Column({ nullable: true })
+  identityCardFront: string;
+
+  @Column({ nullable: true })
+  identityCardBack: string;
+
+  @Column({ nullable: true })
+  permitFront: string;
+
+  @Column({ nullable: true })
+  permitBack: string;
+
+  @ManyToOne(() => Car, (car) => car.events, { onDelete: 'CASCADE' })
   car: Car;
 }

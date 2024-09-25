@@ -20,13 +20,15 @@ export class LoginService {
     const user = await this.usersRepository.findOne({ where: { email } });
 
     if (!user) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedException(
+        'Email not found. Please check your email.',
+      );
     }
 
     const isPasswordMatching = await bcrypt.compare(password, user.password);
 
     if (!isPasswordMatching) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedException('Incorrect password. Please try again.');
     }
 
     const token = this.jwtService.sign(
@@ -42,6 +44,8 @@ export class LoginService {
       email: user.email,
       age: user.age,
       isAdmin: user.isAdmin,
+      role: user.role,
+      image: user.image,
       token: token,
     };
   }

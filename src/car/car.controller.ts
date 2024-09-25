@@ -6,33 +6,27 @@ import {
   Patch,
   Param,
   Delete,
-  UploadedFile,
+  UploadedFiles,
   UseInterceptors,
   BadRequestException,
-  Req,
 } from '@nestjs/common';
 import { CarService } from './car.service';
 import { CreateCarDto } from './dto/create-car.dto';
-import { UpdateCarDto } from './dto/update-car.dto';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FilesInterceptor } from '@nestjs/platform-express';
 import { multerConfig } from '../config/multer.config';
-import { Express, Request } from 'express';
+import { Express } from 'express';
 
 @Controller('car')
 export class CarController {
   constructor(private readonly carService: CarService) {}
 
   @Post('createcar')
-  @UseInterceptors(FileInterceptor('image', multerConfig))
+  @UseInterceptors(FilesInterceptor('image', null, multerConfig)) // Use FilesInterceptor for multiple files
   async createCar(
     @Body() createCarDto: CreateCarDto,
-    @UploadedFile() image: Express.Multer.File,
+    @UploadedFiles() images: Express.Multer.File[], // Correct decorator for multiple files
   ) {
-    console.log('Uploaded file:', image);
-    if (image) {
-      createCarDto.image = image.path;
-    }
-    return this.carService.createCar(createCarDto, image);
+    return this.carService.createCar(createCarDto, images);
   }
 
   @Get('getcars')
@@ -46,24 +40,19 @@ export class CarController {
   }
 
   @Patch('updatecar/:id')
-  @UseInterceptors(FileInterceptor('image', multerConfig))
+  @UseInterceptors(FilesInterceptor('image', null, multerConfig)) // Use FilesInterceptor for multiple files
   async updateCar(
     @Param('id') id: string,
-    @Body() updateCarDto: UpdateCarDto,
-    @UploadedFile() image?: Express.Multer.File,
-    @Req() req?: Request,
+    @Body() updateCarDto: any,
+    @UploadedFiles() images?: Express.Multer.File[], // Correct decorator for multiple files
   ) {
-    console.log('Request Body:', req?.body);
-    console.log('Uploaded File:', image);
-    console.log('Update Car DTO:', updateCarDto);
-
-    if (image) {
-      updateCarDto.image = image.path;
+    if (images && images.length) {
+      updateCarDto.image = images.map((file) => file.path);
     }
     if (Object.keys(updateCarDto).length === 0) {
       throw new BadRequestException('No update values provided.');
     }
-    return this.carService.updateCar(+id, updateCarDto, image);
+    return this.carService.updateCar(+id, updateCarDto, images);
   }
 
   @Delete('removecar/:id')

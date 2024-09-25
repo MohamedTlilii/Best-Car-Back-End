@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  // BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Event } from './entities/event.entity';
@@ -15,25 +19,31 @@ export class EventService {
     private carRepository: Repository<Car>,
   ) {}
 
-  async create(createEventDto: CreateEventDto): Promise<Event> {
-    const { carId, ...eventData } = createEventDto;
+  async create(
+    createEventDto: CreateEventDto,
+    files: {
+      identityCardFront?: Express.Multer.File[];
+      identityCardBack?: Express.Multer.File[];
+      permitFront?: Express.Multer.File[];
+      permitBack?: Express.Multer.File[];
+    },
+  ): Promise<Event> {
+    const carId = Number(createEventDto.carId);
 
-    // Debugging: Log the received DTO
-    console.log('Received CreateEventDto:', createEventDto);
-
-    // Convert carId to number and validate it
-    const parsedCarId = parseInt(carId, 10);
-    if (isNaN(parsedCarId)) {
-      throw new BadRequestException(`Invalid carId: ${carId}`);
-    }
-
-    const car = await this.carRepository.findOneBy({ id: parsedCarId });
-
+    const car = await this.carRepository.findOne({ where: { id: carId } });
     if (!car) {
-      throw new NotFoundException(`Car with ID ${parsedCarId} not found`);
+      throw new NotFoundException(`Car with ID ${carId} not found`);
     }
 
-    const event = this.eventRepository.create({ ...eventData, car });
+    const event = this.eventRepository.create({
+      ...createEventDto,
+      car,
+      identityCardFront: files.identityCardFront?.[0]?.path,
+      identityCardBack: files.identityCardBack?.[0]?.path,
+      permitFront: files.permitFront?.[0]?.path,
+      permitBack: files.permitBack?.[0]?.path,
+    });
+
     return this.eventRepository.save(event);
   }
 
@@ -56,38 +66,34 @@ export class EventService {
 
   async update(id: number, updateEventDto: UpdateEventDto): Promise<Event> {
     console.log(`Updating event with ID ${id}`);
-  
-    // Fetch the event from the database
+
     const event = await this.eventRepository.findOne({
       where: { id },
       relations: ['car'],
     });
-  
+
     console.log('Found event:', event);
-  
+
     if (!event) {
       throw new NotFoundException(`Event with ID ${id} not found`);
     }
-  
-    // If carId is provided, update the car relationship
+
     if (updateEventDto.carId) {
       const car = await this.carRepository.findOneBy({
         id: +updateEventDto.carId,
       });
-  
+
       if (!car) {
         throw new NotFoundException(
           `Car with ID ${updateEventDto.carId} not found`,
         );
       }
-  
+
       event.car = car;
     }
-  
-    // Update event properties
+
     Object.assign(event, updateEventDto);
-  
-    // Save the updated event
+
     return this.eventRepository.save(event);
   }
 

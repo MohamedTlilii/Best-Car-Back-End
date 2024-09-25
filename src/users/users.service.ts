@@ -11,9 +11,8 @@ export class UsersService {
     private usersRepository: Repository<User>,
   ) {}
 
-  getAllUsers() {
-    const users = this.usersRepository.find();
-    return users;
+  async getAllUsers() {
+    return this.usersRepository.find();
   }
 
   async getUser(id: number) {
@@ -27,14 +26,22 @@ export class UsersService {
   }
 
   async updateUser(id: number, updateUserDto: UpdateUserDto) {
-    const existedUser = await this.usersRepository.findOneBy({ id: id });
+    const existedUser = await this.usersRepository.findOneBy({ id });
 
     if (!existedUser) {
       throw new BadRequestException('User not found');
     }
 
     existedUser.name = updateUserDto.name;
+    existedUser.username = updateUserDto.username;
+    existedUser.email = updateUserDto.email;
+    existedUser.age = updateUserDto.age;
+    existedUser.isAdmin = updateUserDto.isAdmin;
+    existedUser.role = updateUserDto.role;
 
+    if (updateUserDto.image) {
+      existedUser.image = updateUserDto.image;
+    }
     const updatedUser = await this.usersRepository.save(existedUser);
     return { message: 'User updated successfully', updatedUser };
   }
